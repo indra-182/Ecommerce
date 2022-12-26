@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface OrderCartService {
     public OrderCart addCart(String username,String productId, Integer quantity);
-    public List<OrderCart> findByCustomerId(String username);
+    public List<OrderCart> findByUsersId(String username);
     public OrderCart updateQuantity(String username, String productId, Integer quantity);
     public void deleteCart(String username, String productId);
 }

@@ -1,8 +1,8 @@
 package com.jdt11.ecommerce.services.impl;
 
-import com.jdt11.ecommerce.entities.Customer;
 import com.jdt11.ecommerce.entities.OrderCart;
 import com.jdt11.ecommerce.entities.Product;
+import com.jdt11.ecommerce.entities.Users;
 import com.jdt11.ecommerce.exceptions.NotFoundException;
 import com.jdt11.ecommerce.repositories.OrderCartRepo;
 import com.jdt11.ecommerce.repositories.ProductRepo;
@@ -29,7 +29,7 @@ public class OrderCartServiceImpl implements OrderCartService {
     public OrderCart addCart(String username, String productId, Integer quantity) {
         Product product = productRepo.findById(productId)
                 .orElseThrow(() -> new NotFoundException("Product ID " + productId + " is not found!"));
-        Optional<OrderCart> checkData = cartRepo.findByCustomerIdAndProductId(username,productId);
+        Optional<OrderCart> checkData = cartRepo.findByUsersIdAndProductId(username,productId);
         OrderCart cart;
         // product already in database?
         if (checkData.isPresent()) {
@@ -43,7 +43,7 @@ public class OrderCartServiceImpl implements OrderCartService {
             cart.setProduct(product);
             cart.setQuantity(quantity);
             cart.setPrice(new BigDecimal(cart.getProduct().getPrice() * cart.getQuantity()));
-            cart.setCustomer(new Customer(username));
+            cart.setUsers(new Users(username));
             cartRepo.save(cart);
         }
 
@@ -51,8 +51,8 @@ public class OrderCartServiceImpl implements OrderCartService {
     }
 
     @Override
-    public List<OrderCart> findByCustomerId(String username) {
-        List<OrderCart> checkId = cartRepo.findByCustomerId(username);
+    public List<OrderCart> findByUsersId(String username) {
+        List<OrderCart> checkId = cartRepo.findByUsersId(username);
         if (checkId.isEmpty()) {
             throw new UsernameNotFoundException("Customer ID " + username + " is not found");
         }
@@ -61,7 +61,7 @@ public class OrderCartServiceImpl implements OrderCartService {
 
     @Override
     public OrderCart updateQuantity(String username, String productId, Integer quantity) {
-        OrderCart data = cartRepo.findByCustomerIdAndProductId(username,productId)
+        OrderCart data = cartRepo.findByUsersIdAndProductId(username,productId)
                 .orElseThrow(() -> new NotFoundException("Product ID " + productId + " is not found!"));
         data.setQuantity(quantity);
         data.setPrice(new BigDecimal(data.getProduct().getPrice() * data.getQuantity()));
@@ -70,7 +70,7 @@ public class OrderCartServiceImpl implements OrderCartService {
 
     @Override
     public void deleteCart(String username, String productId) {
-        OrderCart cart = cartRepo.findByCustomerIdAndProductId(username,productId)
+        OrderCart cart = cartRepo.findByUsersIdAndProductId(username,productId)
                 .orElseThrow(() -> new NotFoundException("Product ID " + productId + " is not found!"));
         cartRepo.delete(cart);
     }

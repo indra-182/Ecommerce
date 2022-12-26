@@ -43,14 +43,13 @@ public class OrderCartController {
 
     // Show Carts by Customer ID
     @GetMapping("/cart")
-    public List<OrderCart> findByCustomerId(@AuthenticationPrincipal UserDetailsImpl user) {
-        return cartService.findByCustomerId(user.getUsername());
+    public List<OrderCart> findByUsersId(@AuthenticationPrincipal UserDetailsImpl user) {
+        return cartService.findByUsersId(user.getUsername());
     }
 
     // Update Cart's Quantity by Product ID, checked by jwt token
     @PatchMapping("/cart/{productId}")
-    public OrderCart updateQuantity(@AuthenticationPrincipal UserDetailsImpl user, @PathVariable("productId") String productId,
-                            @RequestParam("quantity") Integer quantity) {
+    public OrderCart updateQuantity(@AuthenticationPrincipal UserDetailsImpl user, @PathVariable("productId") String productId, @RequestParam("quantity") Integer quantity) {
         return cartService.updateQuantity(user.getUsername(), productId, quantity);
     }
 

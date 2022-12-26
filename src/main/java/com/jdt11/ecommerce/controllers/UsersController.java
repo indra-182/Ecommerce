@@ -1,11 +1,12 @@
 package com.jdt11.ecommerce.controllers;
 
-import com.jdt11.ecommerce.entities.Customer;
 import com.jdt11.ecommerce.entities.DTO.ResponseDTO;
-import com.jdt11.ecommerce.services.CustomerService;
+import com.jdt11.ecommerce.entities.Users;
+import com.jdt11.ecommerce.services.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
@@ -15,15 +16,15 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api")
-public class CustomerController {
+public class UsersController {
 
     @Autowired
-    private CustomerService customerService;
+    private UsersService usersService;
 
     // Create User
     @PostMapping("/customer")
-    public ResponseEntity<ResponseDTO<Customer>> create(@Valid @RequestBody Customer customer, Errors errors) {
-        ResponseDTO<Customer> response = new ResponseDTO<>();
+    public ResponseEntity<ResponseDTO<Users>> create(@Valid @RequestBody Users users, Errors errors) {
+        ResponseDTO<Users> response = new ResponseDTO<>();
 
         if (errors.hasErrors()) {
             for (ObjectError e : errors.getAllErrors()) {
@@ -32,27 +33,39 @@ public class CustomerController {
             response.setPayload(null);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
-        response.setPayload(customerService.create(customer));
+        response.setPayload(usersService.create(users));
         response.getMessages().add("SUCCESS");
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/user")
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+    public String userAccess() {
+        return "User Content.";
+    }
+
+    @GetMapping("/admin")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String adminAccess() {
+        return "Admin Board.";
+    }
+
     // Show All User
     @GetMapping("/customer")
-    public List<Customer> findAll() {
-        return customerService.findAll();
+    public List<Users> findAll() {
+        return usersService.findAll();
     }
 
     // Find Customer by Customer ID
     @GetMapping("/customer/{id}")
-    public Customer findById(@PathVariable("id") String id) {
-        return customerService.findById(id);
+    public Users findById(@PathVariable("id") String id) {
+        return usersService.findById(id);
     }
 
     // Edit Customer
     @PutMapping("/customer")
-    public ResponseEntity<ResponseDTO<Customer>> edit(@Valid @RequestBody Customer customer, Errors errors) {
-        ResponseDTO<Customer> response = new ResponseDTO<>();
+    public ResponseEntity<ResponseDTO<Users>> edit(@Valid @RequestBody Users users, Errors errors) {
+        ResponseDTO<Users> response = new ResponseDTO<>();
 
         if (errors.hasErrors()) {
             for (ObjectError e : errors.getAllErrors()) {
@@ -61,7 +74,7 @@ public class CustomerController {
             response.setPayload(null);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
-        response.setPayload(customerService.edit(customer));
+        response.setPayload(usersService.edit(users));
         response.getMessages().add("SUCCESS");
         return ResponseEntity.ok(response);
     }
@@ -69,6 +82,6 @@ public class CustomerController {
     // Delete Customer by ID
     @DeleteMapping("/customer/{id}")
     public void deleteById(@PathVariable("id") String id) {
-        customerService.deleteById(id);
+        usersService.deleteById(id);
     }
 }

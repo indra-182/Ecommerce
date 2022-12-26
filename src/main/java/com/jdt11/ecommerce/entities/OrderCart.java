@@ -11,8 +11,8 @@ import java.math.BigDecimal;
 public class OrderCart {
     @Id
     private String id;
-    @Column(name = "product_quantity")
 
+    @Column(name = "product_quantity")
     private Integer quantity;
 
     private BigDecimal price;
@@ -21,8 +21,8 @@ public class OrderCart {
     @ManyToOne
     private Product product;
 
-    @JoinColumn(name = "customer_id")
+    @JoinColumn(name = "user_id")
     @ManyToOne
-    private Customer customer;
+    private Users users;
 
 }

@@ -2,7 +2,9 @@ package com.jdt11.ecommerce.entities;
 
 import lombok.Data;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
 @Data

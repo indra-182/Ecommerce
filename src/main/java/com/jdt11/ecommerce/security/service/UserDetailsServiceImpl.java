@@ -1,7 +1,7 @@
 package com.jdt11.ecommerce.security.service;
 
-import com.jdt11.ecommerce.entities.Customer;
-import com.jdt11.ecommerce.repositories.CustomerRepo;
+import com.jdt11.ecommerce.entities.Users;
+import com.jdt11.ecommerce.repositories.UsersRepo;
 import com.jdt11.ecommerce.security.domain.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,13 +13,13 @@ import org.springframework.stereotype.Service;
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Autowired
-    private CustomerRepo customerRepo;
+    private UsersRepo usersRepo;
 
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Customer customer = customerRepo.findById(username)
+        Users users = usersRepo.findById(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Username " + username + " is not found!"));
-        return UserDetailsImpl.build(customer);
+        return UserDetailsImpl.build(users);
     }
 }

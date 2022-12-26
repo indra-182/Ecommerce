@@ -1,7 +1,7 @@
 package com.jdt11.ecommerce.security.config;
 
-import com.jdt11.ecommerce.security.component.AuthTokenFilter;
 import com.jdt11.ecommerce.security.component.AuthEntryPoint;
+import com.jdt11.ecommerce.security.component.AuthTokenFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

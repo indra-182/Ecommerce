@@ -1,6 +1,5 @@
 package com.jdt11.ecommerce.controllers;
 
-import com.jdt11.ecommerce.entities.Category;
 import com.jdt11.ecommerce.entities.DTO.ResponseDTO;
 import com.jdt11.ecommerce.entities.Merchant;
 import com.jdt11.ecommerce.services.MerchantService;

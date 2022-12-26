@@ -4,17 +4,17 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Data
 @Table(name = "mst_customer")
 @NoArgsConstructor
-public class Customer {
+public class Users {
     @Id
     @NotEmpty(message = "Username is required")
     private String id;
@@ -35,7 +35,13 @@ public class Customer {
     @JsonIgnore
     private String password;
 
-    public Customer(String username) {
+    @ManyToMany
+    @JoinTable(  name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles = new HashSet<>();
+
+    public Users(String username) {
         this.id = username;
     }
 }
