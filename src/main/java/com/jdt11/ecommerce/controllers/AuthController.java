@@ -12,6 +12,7 @@ import com.jdt11.ecommerce.security.domain.UserDetailsImpl;
 import com.jdt11.ecommerce.security.service.UserDetailsServiceImpl;
 import com.jdt11.ecommerce.services.RoleService;
 import com.jdt11.ecommerce.services.UsersService;
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,11 +21,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -82,7 +84,7 @@ public class AuthController {
 
     //User Login
     @PostMapping("/login")
-    public ResponseEntity<JwtDTO> authUser(@RequestBody LoginDTO loginDTO) {
+    public ResponseEntity<JwtDTO> authUser(@RequestBody LoginDTO loginDTO) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException {
         Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDTO.getUsername(), loginDTO.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(auth);
 
@@ -91,5 +93,11 @@ public class AuthController {
         List<String> roles = user.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority).collect(Collectors.toList());
         return ResponseEntity.ok().body(new JwtDTO(token, user.getUsername(), roles));
+    }
+
+    @PostMapping("decode")
+    public String decode(@RequestBody String token) throws UnsupportedEncodingException {
+        String payload = token.split("\\.")[1];
+        return new String(Base64.decodeBase64(payload), "UTF-8");
     }
 }

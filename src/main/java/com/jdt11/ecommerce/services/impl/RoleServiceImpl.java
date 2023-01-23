@@ -29,5 +29,4 @@ public class RoleServiceImpl implements RoleService {
         return roleRepo.findAll();
     }
 
-
 }
